@@ -1,7 +1,5 @@
 /// API Base URL - Will use relative URL for deployment
-const API_BASE_URL = window.location.hostname.includes('localhost')
-    ? 'http://localhost:8080'
-    : '';  // Use empty string to make API requests relative to current domain
+const API_BASE_URL = 'https://recipe-portal.onrender.com';
 
 // Authentication module
 const Auth = {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JWT Test</title>
+</head>
+<body>
+<h1>JWT Test</h1>
+<button id="loginBtn">Test Login</button>
+<pre id="result"></pre>
+
+<script>
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const resultArea = document.getElementById('result');
+
+    try {
+      // Test login
+      resultArea.textContent = 'Trying to login...';
+
+      const loginResponse = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: 'admin',
+          password: '1234'
+        })
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error(`Login failed: ${loginResponse.status} ${await loginResponse.text()}`);
+      }
+
+      const tokenData = await loginResponse.json();
+      const token = tokenData.token;
+
+      resultArea.textContent = `Login successful! Token: ${token}\n\nTesting protected endpoint...`;
+
+      // Test protected endpoint with token
+      const protectedResponse = await fetch('/api/recipes/categories', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!protectedResponse.ok) {
+        throw new Error(`Protected request failed: ${protectedResponse.status}`);
+      }
+
+      const protectedData = await protectedResponse.json();
+      resultArea.textContent += `\n\nProtected endpoint success! Data: ${JSON.stringify(protectedData)}`;
+
+    } catch (error) {
+      resultArea.textContent += `\n\nError: ${error.message}`;
+    }
+  });
+</script>
+</body>
+</html>
