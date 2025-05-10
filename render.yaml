@@ -1,0 +1,29 @@
+services:
+  # Backend API Service
+  - type: web
+    name: recipe-api
+    env: docker
+    plan: starter
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: SPRING_DATA_MONGODB_URI
+        sync: false  # This means you'll set it manually in the Render dashboard
+      - key: JWT_SECRET
+        generateValue: true  # Automatically generate a secure value
+      - key: JWT_EXPIRATION
+        value: 86400
+    healthCheckPath: /api/recipes/categories
+
+  # Frontend Service
+  - type: web
+    name: recipe-web
+    env: static
+    buildCommand: mkdir -p dist && cp -r index.html css js dist/
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://recipe-api.onrender.com/api/$1
+      - type: rewrite
+        source: /*
+        destination: /index.html

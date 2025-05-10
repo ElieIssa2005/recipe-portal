@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Management System</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="container">
+  <!-- Login Section -->
+  <div id="login-section" class="auth-section">
+    <div class="auth-container">
+      <h1>Recipe Management System</h1>
+      <div class="form-container">
+        <h2>Login</h2>
+        <div id="login-error" class="error-message"></div>
+        <form id="login-form">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Section (Hidden Initially) -->
+  <div id="app-section" class="hidden">
+    <header>
+      <div class="logo">
+        <h1>Recipe Management System</h1>
+      </div>
+      <div class="user-info">
+        <span id="user-welcome">Welcome, <span id="username-display"></span>!</span>
+        <button id="logout-btn" class="btn btn-small">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <div class="sidebar">
+        <div class="menu">
+          <div class="menu-item active" data-view="dashboard">
+            <i class="fas fa-home"></i> Dashboard
+          </div>
+          <div class="menu-item" data-view="all-recipes">
+            <i class="fas fa-book"></i> All Recipes
+          </div>
+          <div class="menu-item" data-view="my-recipes">
+            <i class="fas fa-user-edit"></i> My Recipes
+          </div>
+          <div class="menu-item" data-view="search-recipes">
+            <i class="fas fa-search"></i> Search
+          </div>
+          <div id="admin-menu-item" class="menu-item" data-view="admin" style="display: none;">
+            <i class="fas fa-lock"></i> Admin
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view-section">
+          <h2>Dashboard</h2>
+          <div class="dashboard-stats">
+            <div class="stat-card">
+              <div class="stat-title">Total Recipes</div>
+              <div id="total-recipes" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">My Recipes</div>
+              <div id="my-recipes-count" class="stat-value">0</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-title">Categories</div>
+              <div id="categories-count" class="stat-value">0</div>
+            </div>
+          </div>
+          <div class="recent-recipes">
+            <h3>Recent Recipes</h3>
+            <div id="recent-recipes-list" class="recipe-list">
+              <!-- Recent recipes will be inserted here -->
+              <div class="loading">Loading...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- All Recipes View -->
+        <div id="all-recipes-view" class="view-section hidden">
+          <h2>All Recipes</h2>
+          <div class="action-bar">
+            <button id="add-recipe-btn" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add New Recipe
+            </button>
+          </div>
+          <div id="all-recipes-list" class="recipe-grid">
+            <!-- Recipes will be loaded here -->
+            <div class="loading">Loading...</div>
+          </div>
+        </div>
+
+        <!-- My Recipes View -->
+        <div id="my-recipes-view" class="view-section hidden">
+          <h2>My Recipes</h2>
+          <div class="action-bar">
+            <button id="add-my-recipe-btn" class="btn btn-primary">
+              <i class="fas fa-plus"></i> Add New Recipe
+            </button>
+          </div>
+          <div id="my-recipes-list" class="recipe-grid">
+            <!-- User's recipes will be loaded here -->
+            <div class="loading">Loading...</div>
+          </div>
+        </div>
+
+        <!-- Search View -->
+        <div id="search-recipes-view" class="view-section hidden">
+          <h2>Search Recipes</h2>
+          <div class="search-form">
+            <form id="search-form">
+              <div class="search-row">
+                <div class="form-group">
+                  <label for="search-title">Title</label>
+                  <input type="text" id="search-title" name="title" placeholder="Search by title">
+                </div>
+                <div class="form-group">
+                  <label for="search-category">Category</label>
+                  <select id="search-category" name="category">
+                    <option value="">Any category</option>
+                    <!-- Categories will be loaded here -->
+                  </select>
+                </div>
+              </div>
+              <div class="search-row">
+                <div class="form-group">
+                  <label for="search-cooking-time">Max Cooking Time (minutes)</label>
+                  <input type="number" id="search-cooking-time" name="maxCookingTime" min="1" placeholder="Max cooking time">
+                </div>
+                <div class="form-group">
+                  <label for="search-ingredient">Ingredient</label>
+                  <input type="text" id="search-ingredient" name="ingredient" placeholder="Search by ingredient">
+                </div>
+              </div>
+              <div class="search-actions">
+                <button type="submit" class="btn btn-primary">Search</button>
+                <button type="reset" class="btn btn-secondary">Reset</button>
+              </div>
+            </form>
+          </div>
+          <h3>Search Results</h3>
+          <div id="search-results" class="recipe-grid">
+            <!-- Search results will be loaded here -->
+          </div>
+        </div>
+
+        <!-- Admin View -->
+        <div id="admin-view" class="view-section hidden">
+          <h2>Admin Dashboard</h2>
+          <div class="admin-card">
+            <h3>User Management</h3>
+            <p>This would typically show user management options.</p>
+            <p class="note">Note: In this demo, we're using in-memory users as defined in your JwtUserDetailsService.</p>
+          </div>
+          <div class="admin-card">
+            <h3>System Statistics</h3>
+            <div class="admin-stats">
+              <div class="admin-stat">
+                <div class="stat-title">Total Recipes</div>
+                <div id="admin-total-recipes" class="stat-value">0</div>
+              </div>
+              <div class="admin-stat">
+                <div class="stat-title">Categories</div>
+                <div id="admin-categories" class="stat-value">0</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Recipe Detail Modal -->
+  <div id="recipe-detail-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modal-recipe-title"></h2>
+      <div class="recipe-details">
+        <div class="recipe-info">
+          <p><strong>Category:</strong> <span id="modal-recipe-category"></span></p>
+          <p><strong>Cooking Time:</strong> <span id="modal-recipe-time"></span> minutes</p>
+          <p><strong>Created By:</strong> <span id="modal-recipe-author"></span></p>
+        </div>
+        <div class="recipe-content">
+          <h3>Ingredients:</h3>
+          <ul id="modal-recipe-ingredients"></ul>
+          <h3>Instructions:</h3>
+          <p id="modal-recipe-instructions"></p>
+        </div>
+      </div>
+      <div id="recipe-actions" class="modal-actions">
+        <!-- Edit/Delete buttons will appear here if the user is authorized -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Recipe Form Modal -->
+  <div id="recipe-form-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="recipe-form-title">Add New Recipe</h2>
+      <form id="recipe-form">
+        <input type="hidden" id="recipe-id">
+        <div class="form-group">
+          <label for="recipe-title">Title</label>
+          <input type="text" id="recipe-title" name="title" required>
+        </div>
+        <div class="form-group">
+          <label for="recipe-category">Category</label>
+          <select id="recipe-category" name="category" required>
+            <option value="">Select a category</option>
+            <!-- Categories will be loaded here -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="recipe-cooking-time">Cooking Time (minutes)</label>
+          <input type="number" id="recipe-cooking-time" name="cookingTime" min="1" required>
+        </div>
+        <div class="form-group">
+          <label for="recipe-ingredients">Ingredients (one per line)</label>
+          <textarea id="recipe-ingredients" name="ingredients" rows="5" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="recipe-instructions">Instructions</label>
+          <textarea id="recipe-instructions" name="instructions" rows="8" required></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save Recipe</button>
+          <button type="button" class="btn btn-secondary cancel-modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div id="confirm-delete-modal" class="modal">
+    <div class="modal-content">
+      <h2>Confirm Delete</h2>
+      <p>Are you sure you want to delete this recipe? This action cannot be undone.</p>
+      <div class="form-actions">
+        <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+        <button class="btn btn-secondary cancel-modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/auth.js"></script>
+<script src="js/recipes.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
