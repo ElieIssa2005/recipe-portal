@@ -19,12 +19,20 @@ public class RecipeOop1Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext context = SpringApplication.run(RecipeOop1Application.class, args);
 
-        // Get the ConsoleUI bean and run it
-        ConsoleUI consoleUI = context.getBean(ConsoleUI.class);
-        consoleUI.start();
+        // Check if we're running in a cloud environment (like Render)
+        boolean isCloudEnvironment = System.getenv("RENDER") != null ||
+                System.getenv("PORT") != null ||
+                System.getenv("MONGODB_URI") != null;
 
-        // Close the application context when the console UI is done
-        context.close();
+        if (!isCloudEnvironment) {
+            // Only run the console UI if we're not in a cloud environment
+            ConsoleUI consoleUI = context.getBean(ConsoleUI.class);
+            consoleUI.start();
+
+            // Close the application context when the console UI is done
+            context.close();
+        }
+        // In cloud environment, the Spring Boot app will keep running to serve web requests
     }
 }
 
@@ -54,6 +62,17 @@ class ConsoleUI implements CommandLineRunner {
      * Start the console UI
      */
     public void start() {
+        // Check if we're running in a cloud environment
+        boolean isCloudEnvironment = System.getenv("RENDER") != null ||
+                System.getenv("PORT") != null ||
+                System.getenv("MONGODB_URI") != null;
+
+        // Skip console UI in cloud environment
+        if (isCloudEnvironment) {
+            System.out.println("Running in cloud environment - skipping console UI");
+            return;
+        }
+
         System.out.println("Welcome to Recipe Management System!");
 
         boolean exit = false;
