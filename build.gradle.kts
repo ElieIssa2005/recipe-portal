@@ -7,6 +7,8 @@ plugins {
     kotlin("plugin.spring") version "1.9.20"
 }
 
+
+
 group = "com.recipe"
 version = "0.0.1-SNAPSHOT"
 
@@ -38,6 +40,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.11.0")
 }
 
 tasks.withType<Test> {
