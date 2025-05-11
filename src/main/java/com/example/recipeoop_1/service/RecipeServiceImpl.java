@@ -110,10 +110,14 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public void deleteRecipe(String id) {
         Recipe recipe = getRecipeById(id);
-        String collectionName = CategoryService.formatCollectionName(recipe.getCategory());
+        String category = recipe.getCategory();
+        String collectionName = CategoryService.formatCollectionName(category);
 
         Query query = new Query(Criteria.where("id").is(id));
         mongoTemplate.remove(query, Recipe.class, collectionName);
+
+        // Check if the category is now empty and delete it if so
+        categoryService.deleteIfEmpty(category);
     }
 
     @Override

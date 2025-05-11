@@ -1,5 +1,11 @@
-/// API Base URL - Will use relative URL for deployment
-const API_BASE_URL = 'https://recipe-portal.onrender.com';
+/// Update auth.js with the correct backend URL
+const API_BASE_URL = 'https://recipe-portal-api.onrender.com';
+
+// OR use environment-aware configuration
+const isProduction = window.location.hostname !== 'localhost';
+const API_BASE_URL = isProduction
+    ? 'https://recipe-portal-api.onrender.com'
+    : '';  // Empty string for relative URLs in development
 
 // Authentication module
 const Auth = {

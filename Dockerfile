@@ -8,7 +8,7 @@ WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 
 # MongoDB connection details will be supplied as environment variables
-ENV MONGODB_URI=mongodb+srv://elieissa:1234@cluster.mongodb.net/recipedb
+ENV MONGODB_URI=mongodb+srv://elieissa:1234@cluster0.wgnomye.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

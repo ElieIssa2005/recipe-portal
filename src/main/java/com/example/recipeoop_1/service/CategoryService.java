@@ -18,8 +18,10 @@ public class CategoryService {
     }
 
     public List<String> getAllCategories() {
+        // Only return collections that have at least one document
         return mongoTemplate.getCollectionNames().stream()
                 .filter(name -> name.startsWith("recipe_"))
+                .filter(name -> mongoTemplate.getCollection(name).countDocuments() > 0) // Only non-empty collections
                 .map(name -> name.substring("recipe_".length()))
                 .collect(Collectors.toList());
     }
@@ -28,6 +30,20 @@ public class CategoryService {
         String collectionName = formatCollectionName(category);
         if (!mongoTemplate.collectionExists(collectionName)) {
             mongoTemplate.createCollection(collectionName);
+        }
+    }
+
+    /**
+     * Delete a category if it's empty
+     */
+    public void deleteIfEmpty(String category) {
+        String collectionName = formatCollectionName(category);
+        if (mongoTemplate.collectionExists(collectionName)) {
+            // Check if collection is empty
+            if (mongoTemplate.getCollection(collectionName).countDocuments() == 0) {
+                // Drop the empty collection
+                mongoTemplate.dropCollection(collectionName);
+            }
         }
     }
 
